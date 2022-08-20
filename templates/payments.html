@@ -1,0 +1,36 @@
+{% extends 'base.html' %}
+
+
+{% block content %}
+<h1>Make Payment </h1>
+<form action="" method="post" id="payform">{% csrf_token %}
+      {{ form.as_p }}
+      <input type="submit" value="Save" /></form>
+
+<script src="https://js.paystack.co/v1/inline.js"></script>
+{% endblock content %}
+
+{% block js %}
+    <script>
+        const paymentForm = document.getElementById('payform');
+        const email = document.querySelector("#id_email");
+        const amount = document.querySelector("#id_amount");
+        const reference = document.querySelector("#id_ref");
+        payform.addEventListener("submit", function(e){
+            e.preventDefault();
+            console.log('done')
+            let obj = {
+                key: '{{ paystack_public_key }}',
+                email: email.value,
+                amount: amount.value * 100,
+                ref: reference.value,
+                currency: 'NGN',
+                callback: function(response){
+                    // window.location.origin + response.reference
+                }
+            };
+            let handler = PaystackPop.setup(obj);
+            handler.openIframe();
+        });
+    </script>
+{% endblock js %}
